@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  backend:
+    build:
+      context: .
+    command: server
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=DEV
+    volumes:
+      - ./.docker-volumes/.dev/.storage:/app/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: data_analyse_dev
+      POSTGRES_USER: data_analyse_dev
+      POSTGRES_PASSWORD: data_analyse_dev_pass
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U data_analyse_dev -d data_analyse_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - ./.docker-volumes/.dev/postgres-data:/var/lib/postgresql/data

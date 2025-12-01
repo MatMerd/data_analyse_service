@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+    echo "No command provided, exiting."
+    exit 0
+fi
+
+if [ -f "/docker-entrypoint/$1" ]; then
+    source "/docker-entrypoint/$1"
+else
+    echo "Command $1 does not exists"
+fi
